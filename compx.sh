@@ -1,2 +1,2 @@
 #/bin/bash
-gcc -fno-stack-protector -z execstack $1 -o $2
+gcc -fno-stack-protector -z execstack -no-pie $1 -o $2

