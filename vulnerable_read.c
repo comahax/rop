@@ -8,7 +8,7 @@ int fd = 0;
 int vulnerable_code()
 {
 	char temp[500];
-	read(STDIN_FILENO, temp, 512 + 20);
+	read(STDIN_FILENO, temp, 512 + 100);
 	return 0;
 }
 
